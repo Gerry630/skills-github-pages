@@ -166,6 +166,99 @@
       font-size: 0.8rem;
       color: #666;
     }
+
+    /* ── Section 2: Rightsizing ──────────────────────── */
+    .section-title {
+      text-align: center;
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #0d1b2a;
+      margin: 3rem auto 0.4rem;
+      max-width: 900px;
+    }
+
+    .section-sub {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #556;
+      margin-bottom: 0.2rem;
+    }
+
+    /* Tier header columns */
+    thead th.tier-light  { background: #2e7d32; color: #fff; }
+    thead th.tier-mid    { background: #f9a825; color: #1a1a00; }
+    thead th.tier-heavy  { background: #b71c1c; color: #fff; }
+
+    /* Tier cell accent borders */
+    td.tier-light-cell  { border-left: 3px solid #2e7d32; }
+    td.tier-mid-cell    { border-left: 3px solid #f9a825; }
+    td.tier-heavy-cell  { border-left: 3px solid #b71c1c; }
+
+    /* Row label column */
+    td.row-label {
+      font-weight: 700;
+      background: #daeaf4;
+      text-align: left;
+      color: #1a3a5c;
+      font-size: 0.92rem;
+      vertical-align: middle;
+    }
+
+    .row-sub {
+      display: block;
+      font-weight: 400;
+      font-size: 0.8rem;
+      color: #556;
+    }
+
+    /* Fit chips */
+    .chip {
+      display: inline-block;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+    }
+
+    .chip-green  { background: #c8e6c9; color: #1b5e20; }
+    .chip-yellow { background: #fff9c4; color: #5d4037; border: 1px solid #f9a825; }
+    .chip-red    { background: #ffcdd2; color: #7f0000; }
+
+    /* Principles grid */
+    .principles {
+      max-width: 1100px;
+      margin: 2.5rem auto 0;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+      padding: 1.8rem 2rem;
+    }
+
+    .principles h3 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #0d1b2a;
+      margin-bottom: 1.2rem;
+      text-align: center;
+    }
+
+    .principles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.2rem;
+    }
+
+    .principle-card {
+      background: #f2f8fc;
+      border-radius: 8px;
+      padding: 1rem 1.2rem;
+      border-left: 4px solid #5b9fbe;
+    }
+
+    .p-icon  { font-size: 1.6rem; margin-bottom: 0.3rem; }
+    .p-title { font-weight: 700; font-size: 0.97rem; color: #1a3a5c; margin-bottom: 0.3rem; }
+    .p-body  { font-size: 0.87rem; color: #334; line-height: 1.55; }
   </style>
 </head>
 <body>
@@ -302,7 +395,134 @@
     </table>
   </div>
 
-  <footer>AI Architecture Evolution &mdash; GitHub Pages</footer>
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 2 – Rightsizing Hardware for AI Workloads
+       ═══════════════════════════════════════════════════════════════ -->
+  <h2 class="section-title">Rightsizing Hardware for AI Workloads</h2>
+  <p class="section-sub">Match the accelerator tier to the workload — avoid over-provisioning and under-provisioning.</p>
+
+  <div class="table-wrapper" style="max-width:1100px; margin-top:1.2rem;">
+    <table>
+      <thead>
+        <tr>
+          <th style="background:#c9dce8;color:#1a3a5c;text-align:left;width:18%;">Workload Type</th>
+          <th class="tier-light">🟢 Light Tier<br><span style="font-size:0.8rem;font-weight:400;">CPU / Entry GPU</span></th>
+          <th class="tier-mid">🟡 Mid Tier<br><span style="font-size:0.8rem;font-weight:400;">Data-center GPU</span></th>
+          <th class="tier-heavy">🔴 Heavy Tier<br><span style="font-size:0.8rem;font-weight:400;">HPC / Multi-GPU</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="row-label">LLM Inference<br><span class="row-sub">(small model, &lt;7B)</span></td>
+          <td class="tier-light-cell">
+            <div class="chip chip-green">✔ Best fit</div>
+            CPU + quantized INT4/INT8
+          </td>
+          <td class="tier-mid-cell">Overkill for small models</td>
+          <td class="tier-heavy-cell">Wasteful</td>
+        </tr>
+        <tr>
+          <td class="row-label">LLM Inference<br><span class="row-sub">(large model, 70B+)</span></td>
+          <td class="tier-light-cell">Insufficient memory</td>
+          <td class="tier-mid-cell">
+            <div class="chip chip-yellow">✔ Good fit</div>
+            Single high-VRAM GPU<br>(e.g., H100 80 GB, L40S)
+          </td>
+          <td class="tier-heavy-cell">
+            <div class="chip chip-red">✔ Required for 405B+</div>
+            Tensor-parallel multi-GPU
+          </td>
+        </tr>
+        <tr>
+          <td class="row-label">Fine-Tuning<br><span class="row-sub">(LoRA / QLoRA)</span></td>
+          <td class="tier-light-cell">Too slow</td>
+          <td class="tier-mid-cell">
+            <div class="chip chip-yellow">✔ Best fit</div>
+            1–2 GPUs, FP16/BF16
+          </td>
+          <td class="tier-heavy-cell">Viable; diminishing returns for small datasets</td>
+        </tr>
+        <tr>
+          <td class="row-label">Pre-training<br><span class="row-sub">(large-scale)</span></td>
+          <td class="tier-light-cell">Not feasible</td>
+          <td class="tier-mid-cell">Only for very small experiments</td>
+          <td class="tier-heavy-cell">
+            <div class="chip chip-red">✔ Required</div>
+            DGX / HGX cluster, NVLink + InfiniBand
+          </td>
+        </tr>
+        <tr>
+          <td class="row-label">RAG / Embedding<br><span class="row-sub">(vector search)</span></td>
+          <td class="tier-light-cell">
+            <div class="chip chip-green">✔ Best fit</div>
+            CPU or low-end GPU for embeddings
+          </td>
+          <td class="tier-mid-cell">Good for high-throughput batch embedding</td>
+          <td class="tier-heavy-cell">Overkill</td>
+        </tr>
+        <tr>
+          <td class="row-label">Agentic AI<br><span class="row-sub">(multi-agent pipelines)</span></td>
+          <td class="tier-light-cell">Bottleneck for orchestration</td>
+          <td class="tier-mid-cell">
+            <div class="chip chip-yellow">✔ Good fit</div>
+            Heterogeneous mix: inference GPU + CPU for orchestration
+          </td>
+          <td class="tier-heavy-cell">
+            <div class="chip chip-red">✔ For high-scale</div>
+            MGX / OCP mixed racks
+          </td>
+        </tr>
+        <tr>
+          <td class="row-label">Model Serving<br><span class="row-sub">(real-time API)</span></td>
+          <td class="tier-light-cell">Only for tiny models</td>
+          <td class="tier-mid-cell">
+            <div class="chip chip-yellow">✔ Best fit</div>
+            Inference-optimized GPU<br>(L40S, A10G), low-latency
+          </td>
+          <td class="tier-heavy-cell">Reserved for massive concurrent load</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Key rightsizing principles -->
+  <div class="principles">
+    <h3>Key Rightsizing Principles</h3>
+    <div class="principles-grid">
+      <div class="principle-card">
+        <div class="p-icon">💾</div>
+        <div class="p-title">Memory First</div>
+        <div class="p-body">Model weights must fit in GPU VRAM. A 70B FP16 model needs ~140 GB — plan for multi-GPU tensor parallelism or quantization.</div>
+      </div>
+      <div class="principle-card">
+        <div class="p-icon">⚡</div>
+        <div class="p-title">Bandwidth Over FLOPS</div>
+        <div class="p-body">Inference is memory-bandwidth-bound, not compute-bound. Prefer GPUs with high HBM bandwidth (e.g., H100: 3.35 TB/s) for low-latency serving.</div>
+      </div>
+      <div class="principle-card">
+        <div class="p-icon">🌡️</div>
+        <div class="p-title">Thermal &amp; Power Budget</div>
+        <div class="p-body">Dense GPU racks (400–1000 W/GPU) require liquid cooling. Plan facility power and cooling before hardware procurement.</div>
+      </div>
+      <div class="principle-card">
+        <div class="p-icon">🔀</div>
+        <div class="p-title">Heterogeneous Pools</div>
+        <div class="p-body">Separate training, inference, and embedding GPU pools. Mixed fleets (e.g., H100 + L40S) optimize cost and utilization across workload types.</div>
+      </div>
+      <div class="principle-card">
+        <div class="p-icon">📐</div>
+        <div class="p-title">Quantization Leverage</div>
+        <div class="p-body">INT8 / INT4 quantization can halve VRAM requirements with minimal quality loss — enabling a smaller (cheaper) GPU tier for many inference workloads.</div>
+      </div>
+      <div class="principle-card">
+        <div class="p-icon">📊</div>
+        <div class="p-title">Profile Before Scaling</div>
+        <div class="p-body">Measure actual GPU utilization, memory usage, and latency under realistic load before scaling out. Idle GPU time is wasted CapEx.</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>AI Architecture Evolution &amp; Hardware Rightsizing &mdash; GitHub Pages</footer>
 
 </body>
 </html>
