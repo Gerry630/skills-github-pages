@@ -3,30 +3,35 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Homogeneous vs Heterogeneous GPU</title>
+  <title>Evolution of AI Architectures and Infrastructure Impact</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: #f4f6f9;
+      background: #eaf4fb;
       color: #1a1a2e;
       padding: 2rem 1rem;
     }
 
     h1 {
       text-align: center;
-      font-size: 1.8rem;
-      margin-bottom: 2rem;
+      font-size: 1.6rem;
+      font-weight: 800;
+      margin-bottom: 1.8rem;
       color: #0d1b2a;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.4;
     }
 
     .table-wrapper {
       overflow-x: auto;
-      max-width: 960px;
+      max-width: 1050px;
       margin: 0 auto;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+      border-radius: 10px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.13);
     }
 
     table {
@@ -35,169 +40,269 @@
       background: #ffffff;
     }
 
+    /* Header row */
     thead th {
-      padding: 1rem 1.5rem;
-      font-size: 1.1rem;
+      padding: 1rem 1.2rem;
+      font-size: 1.05rem;
+      font-weight: 700;
       text-align: center;
+      vertical-align: middle;
     }
 
     thead th:first-child {
-      background: #e8ecf0;
-      color: #444;
+      background: #c9dce8;
+      color: #1a3a5c;
       text-align: left;
-      font-weight: 700;
-      font-size: 1rem;
+      width: 17%;
     }
 
-    thead th.homo {
-      background: #1a3a5c;
-      color: #ffffff;
-    }
+    thead th.gen-ai  { background: #5b9fbe; color: #ffffff; }
+    thead th.agent   { background: #4a8f6e; color: #ffffff; }
+    thead th.agentic { background: #2e6b5e; color: #ffffff; }
 
-    thead th.hetero {
-      background: #2e6b3e;
-      color: #ffffff;
-    }
-
-    tbody tr {
-      border-top: 1px solid #e0e4ea;
-    }
-
-    tbody tr:nth-child(even) {
-      background: #f8fafc;
-    }
+    /* Body rows */
+    tbody tr { border-top: 1px solid #d4e4ef; }
+    tbody tr:nth-child(even) { background: #f2f8fc; }
 
     tbody td {
-      padding: 1rem 1.5rem;
-      vertical-align: top;
+      padding: 0.9rem 1.2rem;
+      vertical-align: middle;
       line-height: 1.6;
-      font-size: 0.95rem;
+      font-size: 0.93rem;
+      text-align: center;
     }
 
     tbody td:first-child {
       font-weight: 700;
-      background: #eef1f5;
-      white-space: nowrap;
-      color: #333;
-      font-size: 0.9rem;
+      background: #daeaf4;
+      text-align: left;
+      color: #1a3a5c;
+      font-size: 0.92rem;
     }
 
-    tbody td.homo-cell {
-      border-left: 3px solid #1a3a5c;
+    /* Column accent borders */
+    td.gen-ai-cell  { border-left: 3px solid #5b9fbe; }
+    td.agent-cell   { border-left: 3px solid #4a8f6e; }
+    td.agentic-cell { border-left: 3px solid #2e6b5e; }
+
+    /* Progress bar for Tools & Collaboration */
+    .bar-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      justify-content: center;
     }
 
-    tbody td.hetero-cell {
-      border-left: 3px solid #2e6b3e;
+    .bar-icon { font-size: 1.4rem; flex-shrink: 0; }
+
+    .bar-track {
+      flex: 1;
+      height: 14px;
+      background: #d0e8f0;
+      border-radius: 7px;
+      overflow: hidden;
+      max-width: 200px;
     }
 
-    .tag {
-      display: inline-block;
-      padding: 0.15rem 0.5rem;
-      border-radius: 4px;
-      font-size: 0.8rem;
+    .bar-fill {
+      height: 100%;
+      border-radius: 7px;
+      background: linear-gradient(90deg, #5b9fbe, #2e6b5e);
+    }
+
+    /* Architecture diagrams (CSS-drawn) */
+    .arch {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.82rem;
       font-weight: 600;
-      margin: 0 0.15rem;
+      color: #2e5a3e;
     }
 
-    .tag-blue  { background: #dbeafe; color: #1e40af; }
-    .tag-green { background: #dcfce7; color: #166534; }
+    .arch .boxes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      justify-content: center;
+    }
 
-    strong { color: #111; }
+    .box {
+      width: 22px;
+      height: 22px;
+      border-radius: 3px;
+    }
+
+    .box-green { background: #4a8f6e; }
+    .box-blue  { background: #5b9fbe; }
+    .box-teal  { background: #2e6b5e; }
+
+    .shared-mem {
+      display: inline-block;
+      padding: 2px 7px;
+      background: #d0e8f0;
+      border: 1px solid #5b9fbe;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      color: #1a3a5c;
+      margin-left: 4px;
+    }
+
+    /* Emoji icons for Data Center and Infrastructure */
+    .icon-label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .icon-label .icon { font-size: 2rem; }
+    .icon-label .label { font-size: 0.82rem; font-weight: 600; color: #1a3a5c; }
 
     footer {
       text-align: center;
       margin-top: 2.5rem;
       font-size: 0.8rem;
-      color: #888;
+      color: #666;
     }
   </style>
 </head>
 <body>
-  <h1>Homogeneous GPU vs Heterogeneous GPU</h1>
+
+  <h1>Evolution of AI Architectures and Infrastructure Impact:<br>From Content to Goal-Driven Systems</h1>
 
   <div class="table-wrapper">
     <table>
       <thead>
         <tr>
-          <th>Dimension</th>
-          <th class="homo">Homogeneous GPU</th>
-          <th class="hetero">Heterogeneous GPU</th>
+          <th>Category</th>
+          <th class="gen-ai">🎨 Generative AI</th>
+          <th class="agent">🤖 AI Agent</th>
+          <th class="agentic">🕸️ Agentic AI</th>
         </tr>
       </thead>
       <tbody>
+
         <tr>
-          <td>GPU Type</td>
-          <td class="homo-cell">
-            Single GPU architecture<br>
-            (e.g., all H100, all B200)
+          <td>Core Role</td>
+          <td class="gen-ai-cell">Content Generation Tool</td>
+          <td class="agent-cell">Task-Oriented Executor</td>
+          <td class="agentic-cell">Goal-Driven Autonomous System</td>
+        </tr>
+
+        <tr>
+          <td>Autonomy</td>
+          <td class="gen-ai-cell">Low (Reactive)</td>
+          <td class="agent-cell">Medium (Task-level Autonomy)</td>
+          <td class="agentic-cell">High (System-level Autonomy)</td>
+        </tr>
+
+        <tr>
+          <td>Architecture</td>
+          <td class="gen-ai-cell">
+            <div class="arch">
+              <div class="boxes"><div class="box box-green"></div></div>
+              Single Model
+            </div>
           </td>
-          <td class="hetero-cell">
-            Mixed GPU types<br>
-            (e.g., H100 + L40S, B200 + inference GPUs)
+          <td class="agent-cell">
+            <div class="arch">
+              <div class="boxes">
+                <div class="box box-green"></div>
+                <div class="box box-blue"></div>
+                <div class="box box-blue"></div>
+                <div class="box box-blue"></div>
+              </div>
+              Multi-component Pipeline
+            </div>
+          </td>
+          <td class="agentic-cell">
+            <div class="arch">
+              <div class="boxes">
+                <div class="box box-teal"></div>
+                <div class="box box-teal"></div>
+                <div class="box box-teal"></div>
+                <div class="box box-teal"></div>
+                <div class="box box-teal"></div>
+                <div class="box box-teal"></div>
+              </div>
+              Multi-agent Network <span class="shared-mem">Shared Memory</span>
+            </div>
           </td>
         </tr>
+
         <tr>
-          <td>System Goal</td>
-          <td class="homo-cell">
-            Maximize <strong>uniform performance</strong> and scale-up efficiency
+          <td>Tools &amp; Collaboration</td>
+          <td class="gen-ai-cell">
+            <div class="bar-wrap">
+              <span class="bar-icon">👤</span>
+              <div class="bar-track"><div class="bar-fill" style="width:35%"></div></div>
+            </div>
           </td>
-          <td class="hetero-cell">
-            Maximize perf/$, perf/W, and flexibility
+          <td class="agent-cell">
+            <div class="bar-wrap">
+              <span class="bar-icon">👩‍💻</span>
+              <div class="bar-track"><div class="bar-fill" style="width:65%"></div></div>
+            </div>
+          </td>
+          <td class="agentic-cell">
+            <div class="bar-wrap">
+              <span class="bar-icon">🔧</span>
+              <div class="bar-track"><div class="bar-fill" style="width:95%"></div></div>
+            </div>
           </td>
         </tr>
+
         <tr>
-          <td>Programming Model</td>
-          <td class="homo-cell">
-            Simple, symmetric
-            <span class="tag tag-blue">Process A ↔ Process B</span>
+          <td>Data Center Mapping</td>
+          <td class="gen-ai-cell">
+            <div class="icon-label">
+              <span class="icon">🖥️</span>
+              <span class="label">Standalone Compute</span>
+            </div>
           </td>
-          <td class="hetero-cell">
-            More complex scheduling and orchestration
+          <td class="agent-cell">
+            <div class="icon-label">
+              <span class="icon">🗄️</span>
+              <span class="label">Node-level Automation</span>
+            </div>
+          </td>
+          <td class="agentic-cell">
+            <div class="icon-label">
+              <span class="icon">🏗️</span>
+              <span class="label">System-level Orchestration</span>
+            </div>
           </td>
         </tr>
+
         <tr>
-          <td>Workload Fit</td>
-          <td class="homo-cell">
-            Large-scale <strong>training</strong>, tightly coupled inference
+          <td>Infrastructure Impact</td>
+          <td class="gen-ai-cell">
+            <div class="icon-label">
+              <span class="icon">💨</span>
+              <span class="label">Conventional Air Cooling</span>
+            </div>
           </td>
-          <td class="hetero-cell">
-            <strong>Inference, agentic AI, RAG</strong>, mixed workloads
+          <td class="agent-cell">
+            <div class="icon-label">
+              <span class="icon">💧</span>
+              <span class="label">High-power Nodes, Liquid Cooling</span>
+            </div>
+          </td>
+          <td class="agentic-cell">
+            <div class="icon-label">
+              <span class="icon">⚡</span>
+              <span class="label">High-density Racks, Cooling + Power + Network Co-design</span>
+            </div>
           </td>
         </tr>
-        <tr>
-          <td>Resource Utilization</td>
-          <td class="homo-cell">
-            High for uniform jobs
-          </td>
-          <td class="hetero-cell">
-            Higher overall utilization across diverse jobs
-          </td>
-        </tr>
-        <tr>
-          <td>Cost Efficiency</td>
-          <td class="homo-cell">
-            Lower flexibility, higher cost floor
-          </td>
-          <td class="hetero-cell">
-            Better TCO by right-sizing accelerators
-          </td>
-        </tr>
-        <tr>
-          <td>Typical Platforms</td>
-          <td class="homo-cell">
-            <span class="tag tag-blue">DGX</span>
-            <span class="tag tag-blue">HGX</span> clusters
-          </td>
-          <td class="hetero-cell">
-            <span class="tag tag-green">MGX</span>
-            <span class="tag tag-green">OCP</span>
-            mixed AI racks
-          </td>
-        </tr>
+
       </tbody>
     </table>
   </div>
 
-  <footer>GPU Architecture Comparison &mdash; GitHub Pages</footer>
+  <footer>AI Architecture Evolution &mdash; GitHub Pages</footer>
+
 </body>
 </html>
