@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Evolution of AI Architectures and Infrastructure Impact</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #eaf4fb;
+      color: #1a1a2e;
+      padding: 2rem 1rem;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 1.6rem;
+      font-weight: 800;
+      margin-bottom: 1.8rem;
+      color: #0d1b2a;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.4;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+      max-width: 1050px;
+      margin: 0 auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #ffffff;
+    }
+
+    /* Header row */
+    thead th {
+      padding: 1rem 1.2rem;
+      font-size: 1.05rem;
+      font-weight: 700;
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    thead th:first-child {
+      background: #c9dce8;
+      color: #1a3a5c;
+      text-align: left;
+      width: 17%;
+    }
+
+    thead th.gen-ai  { background: #5b9fbe; color: #ffffff; }
+    thead th.agent   { background: #4a8f6e; color: #ffffff; }
+    thead th.agentic { background: #2e6b5e; color: #ffffff; }
+
+    /* Body rows */
+    tbody tr { border-top: 1px solid #d4e4ef; }
+    tbody tr:nth-child(even) { background: #f2f8fc; }
+
+    tbody td {
+      padding: 0.9rem 1.2rem;
+      vertical-align: middle;
+      line-height: 1.6;
+      font-size: 0.93rem;
+      text-align: center;
+    }
+
+    tbody td:first-child {
+      font-weight: 700;
+      background: #daeaf4;
+      text-align: left;
+      color: #1a3a5c;
+      font-size: 0.92rem;
+    }
+
+    /* Column accent borders */
+    td.gen-ai-cell  { border-left: 3px solid #5b9fbe; }
+    td.agent-cell   { border-left: 3px solid #4a8f6e; }
+    td.agentic-cell { border-left: 3px solid #2e6b5e; }
+
+    /* Progress bar for Tools & Collaboration */
+    .bar-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      justify-content: center;
+    }
+
+    .bar-icon { font-size: 1.4rem; flex-shrink: 0; }
+
+    .bar-track {
+      flex: 1;
+      height: 14px;
+      background: #d0e8f0;
+      border-radius: 7px;
+      overflow: hidden;
+      max-width: 200px;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 7px;
+      background: linear-gradient(90deg, #5b9fbe, #2e6b5e);
+    }
+
+    /* Architecture diagrams (CSS-drawn) */
+    .arch {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #2e5a3e;
+    }
+
+    .arch .boxes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      justify-content: center;
+    }
+
+    .box {
+      width: 22px;
+      height: 22px;
+      border-radius: 3px;
+    }
+
+    .box-green { background: #4a8f6e; }
+    .box-blue  { background: #5b9fbe; }
+    .box-teal  { background: #2e6b5e; }
+
+    .shared-mem {
+      display: inline-block;
+      padding: 2px 7px;
+      background: #d0e8f0;
+      border: 1px solid #5b9fbe;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      color: #1a3a5c;
+      margin-left: 4px;
+    }
+
+    /* Emoji icons for Data Center and Infrastructure */
+    .icon-label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .icon-label .icon { font-size: 2rem; }
+    .icon-label .label { font-size: 0.82rem; font-weight: 600; color: #1a3a5c; }
+
+    footer {
+      text-align: center;
+      margin-top: 2.5rem;
+      font-size: 0.8rem;
+      color: #666;
+    }
+
+    /* ── Section 2: Rightsizing ──────────────────────── */
+    .section-title {
+      text-align: center;
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #0d1b2a;
+      margin: 3rem auto 0.4rem;
+      max-width: 900px;
+    }
+
+    .section-sub {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #556;
+      margin-bottom: 0.2rem;
+    }
+
+    /* Tier header columns */
+    thead th.tier-light  { background: #2e7d32; color: #fff; }
+    thead th.tier-mid    { background: #f9a825; color: #1a1a00; }
+    thead th.tier-heavy  { background: #b71c1c; color: #fff; }
+
+    /* Tier cell accent borders */
+    td.tier-light-cell  { border-left: 3px solid #2e7d32; }
+    td.tier-mid-cell    { border-left: 3px solid #f9a825; }
+    td.tier-heavy-cell  { border-left: 3px solid #b71c1c; }
+
+    /* Row label column */
+    td.row-label {
+      font-weight: 700;
+      background: #daeaf4;
+      text-align: left;
+      color: #1a3a5c;
+      font-size: 0.92rem;
+      vertical-align: middle;
+    }
+
+    .row-sub {
+      display: block;
+      font-weight: 400;
+      font-size: 0.8rem;
+      color: #556;
+    }
+
+    /* Fit chips */
+    .chip {
+      display: inline-block;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+    }
+
+    .chip-green  { background: #c8e6c9; color: #1b5e20; }
+    .chip-yellow { background: #fff9c4; color: #5d4037; border: 1px solid #f9a825; }
+    .chip-red    { background: #ffcdd2; color: #7f0000; }
+
+    /* Principles grid */
+    .principles {
+      max-width: 1100px;
+      margin: 2.5rem auto 0;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+      padding: 1.8rem 2rem;
+    }
+
+    .principles h3 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #0d1b2a;
+      margin-bottom: 1.2rem;
+      text-align: center;
+    }
+
+    .principles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.2rem;
+    }
+
+    .principle-card {
+      background: #f2f8fc;
+      border-radius: 8px;
+      padding: 1rem 1.2rem;
+      border-left: 4px solid #5b9fbe;
+    }
+
+    .p-icon  { font-size: 1.6rem; margin-bottom: 0.3rem; }
+    .p-title { font-weight: 700; font-size: 0.97rem; color: #1a3a5c; margin-bottom: 0.3rem; }
+    .p-body  { font-size: 0.87rem; color: #334; line-height: 1.55; }
+
+    /* ── Section 3: Contact Information (PPT last slide) ─────────── */
+    .contact-slide {
+      max-width: 900px;
+      margin: 3.5rem auto 0;
+      background: linear-gradient(135deg, #0d1b2a 0%, #1a3a5c 60%, #2e6b5e 100%);
+      border-radius: 14px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.22);
+      padding: 3rem 3.5rem;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* decorative corner accent */
+    .contact-slide::before {
+      content: "";
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+    }
+
+    .contact-slide::after {
+      content: "";
+      position: absolute;
+      bottom: -40px; left: -40px;
+      width: 140px; height: 140px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.04);
+    }
+
+    .contact-slide .slide-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #7ecfb3;
+      margin-bottom: 0.6rem;
+    }
+
+    .contact-slide h2 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 0.4rem;
+      line-height: 1.2;
+    }
+
+    .contact-slide .tagline {
+      font-size: 0.95rem;
+      color: #a8c8e0;
+      margin-bottom: 2.2rem;
+    }
+
+    .contact-divider {
+      border: none;
+      border-top: 1px solid rgba(255,255,255,0.18);
+      margin-bottom: 2rem;
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.4rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.85rem;
+    }
+
+    .contact-item .ci-icon {
+      font-size: 1.5rem;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+
+    .contact-item .ci-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #7ecfb3;
+      margin-bottom: 0.15rem;
+    }
+
+    .contact-item .ci-value {
+      font-size: 0.9rem;
+      color: #e8f4fb;
+      word-break: break-all;
+    }
+
+    .contact-item a.ci-value {
+      color: #7ecfb3;
+      text-decoration: none;
+    }
+
+    .contact-item a.ci-value:hover { text-decoration: underline; }
+
+    .contact-slide .slide-footer {
+      margin-top: 2.5rem;
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.45);
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Evolution of AI Architectures and Infrastructure Impact:<br>From Content to Goal-Driven Systems</h1>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th class="gen-ai">🎨 Generative AI</th>
+          <th class="agent">🤖 AI Agent</th>
+          <th class="agentic">🕸️ Agentic AI</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <tr>
+          <td>Core Role</td>
+          <td class="gen-ai-cell">Content Generation Tool</td>
+          <td class="agent-cell">Task-Oriented Executor</td>
+          <td class="agentic-cell">Goal-Driven Autonomous System</td>
+        </tr>
+
+        <tr>
+          <td>Autonomy</td>
+          <td class="gen-ai-cell">Low (Reactive)</td>
+          <td class="agent-cell">Medium (Task-level Autonomy)</td>
+          <td class="agentic-cell">High (System-level Autonomy)</td>
+        </tr>
+
+        <tr>
+          <td>Architecture</td>
+          <td class="gen-ai-cell">
+            <div class="arch">
+              <div class="boxes"><div class="box box-green"></div></div>
+              Single Model
+            </div>
+          </td>
+          <td class="agent-cell">
+            <div class="arch">
+              <div class="boxes">
+                <div class="box box-green"></div>
+                <div class="box box-blue"></div>
+                <div class="box box-blue"></div>
+                <div class="box box-blue"></div>
+              </div>
+              Multi-component Pipeline
+            </div>
+          </td>
+          <td class="agentic-cell">
+            <div class="arch">
+              <div class="boxes">
+                <div class="box box-teal"></div>
+                <div class="box box-teal"></div>
+                <div class="box box-teal"></div>
+                <div class="box box-teal"></div>
+                <div class="box box-teal"></div>
+                <div class="box box-teal"></div>
+              </div>
+              Multi-agent Network <span class="shared-mem">Shared Memory</span>
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <td>Tools &amp; Collaboration</td>
+          <td class="gen-ai-cell">
+            <div class="bar-wrap">
+              <span class="bar-icon">👤</span>
+              <div class="bar-track"><div class="bar-fill" style="width:35%"></div></div>
+            </div>
+          </td>
+          <td class="agent-cell">
+            <div class="bar-wrap">
+              <span class="bar-icon">👩‍💻</span>
+              <div class="bar-track"><div class="bar-fill" style="width:65%"></div></div>
+            </div>
+          </td>
+          <td class="agentic-cell">
+            <div class="bar-wrap">
+              <span class="bar-icon">🔧</span>
+              <div class="bar-track"><div class="bar-fill" style="width:95%"></div></div>
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <td>Data Center Mapping</td>
+          <td class="gen-ai-cell">
+            <div class="icon-label">
+              <span class="icon">🖥️</span>
+              <span class="label">Standalone Compute</span>
+            </div>
+          </td>
+          <td class="agent-cell">
+            <div class="icon-label">
+              <span class="icon">🗄️</span>
+              <span class="label">Node-level Automation</span>
+            </div>
+          </td>
+          <td class="agentic-cell">
+            <div class="icon-label">
+              <span class="icon">🏗️</span>
+              <span class="label">System-level Orchestration</span>
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <td>Infrastructure Impact</td>
+          <td class="gen-ai-cell">
+            <div class="icon-label">
+              <span class="icon">💨</span>
+              <span class="label">Conventional Air Cooling</span>
+            </div>
+          </td>
+          <td class="agent-cell">
+            <div class="icon-label">
+              <span class="icon">💧</span>
+              <span class="label">High-power Nodes, Liquid Cooling</span>
+            </div>
+          </td>
+          <td class="agentic-cell">
+            <div class="icon-label">
+              <span class="icon">⚡</span>
+              <span class="label">High-density Racks, Cooling + Power + Network Co-design</span>
+            </div>
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 2 – Rightsizing Hardware for AI Workloads
+       ═══════════════════════════════════════════════════════════════ -->
+  <h2 class="section-title">Rightsizing Hardware for AI Workloads</h2>
+  <p class="section-sub">Match the accelerator tier to the workload — avoid over-provisioning and under-provisioning.</p>
+
+  <div class="table-wrapper" style="max-width:1100px; margin-top:1.2rem;">
+    <table>
+      <thead>
+        <tr>
+          <th style="background:#c9dce8;color:#1a3a5c;text-align:left;width:18%;">Workload Type</th>
+          <th class="tier-light">🟢 Light Tier<br><span style="font-size:0.8rem;font-weight:400;">CPU / Entry GPU</span></th>
+          <th class="tier-mid">🟡 Mid Tier<br><span style="font-size:0.8rem;font-weight:400;">Data-center GPU</span></th>
+          <th class="tier-heavy">🔴 Heavy Tier<br><span style="font-size:0.8rem;font-weight:400;">HPC / Multi-GPU</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="row-label">LLM Inference<br><span class="row-sub">(small model, &lt;7B)</span></td>
+          <td class="tier-light-cell">
+            <div class="chip chip-green">✔ Best fit</div>
+            CPU + quantized INT4/INT8
+          </td>
+          <td class="tier-mid-cell">Overkill for small models</td>
+          <td class="tier-heavy-cell">Wasteful</td>
+        </tr>
+        <tr>
+          <td class="row-label">LLM Inference<br><span class="row-sub">(large model, 70B+)</span></td>
+          <td class="tier-light-cell">Insufficient memory</td>
+          <td class="tier-mid-cell">
+            <div class="chip chip-yellow">✔ Good fit</div>
+            Single high-VRAM GPU<br>(e.g., H100 80 GB, L40S)
+          </td>
+          <td class="tier-heavy-cell">
+            <div class="chip chip-red">✔ Required for 405B+</div>
+            Tensor-parallel multi-GPU
+          </td>
+        </tr>
+        <tr>
+          <td class="row-label">Fine-Tuning<br><span class="row-sub">(LoRA / QLoRA)</span></td>
+          <td class="tier-light-cell">Too slow</td>
+          <td class="tier-mid-cell">
+            <div class="chip chip-yellow">✔ Best fit</div>
+            1–2 GPUs, FP16/BF16
+          </td>
+          <td class="tier-heavy-cell">Viable; diminishing returns for small datasets</td>
+        </tr>
+        <tr>
+          <td class="row-label">Pre-training<br><span class="row-sub">(large-scale)</span></td>
+          <td class="tier-light-cell">Not feasible</td>
+          <td class="tier-mid-cell">Only for very small experiments</td>
+          <td class="tier-heavy-cell">
+            <div class="chip chip-red">✔ Required</div>
+            DGX / HGX cluster, NVLink + InfiniBand
+          </td>
+        </tr>
+        <tr>
+          <td class="row-label">RAG / Embedding<br><span class="row-sub">(vector search)</span></td>
+          <td class="tier-light-cell">
+            <div class="chip chip-green">✔ Best fit</div>
+            CPU or low-end GPU for embeddings
+          </td>
+          <td class="tier-mid-cell">Good for high-throughput batch embedding</td>
+          <td class="tier-heavy-cell">Overkill</td>
+        </tr>
+        <tr>
+          <td class="row-label">Agentic AI<br><span class="row-sub">(multi-agent pipelines)</span></td>
+          <td class="tier-light-cell">Bottleneck for orchestration</td>
+          <td class="tier-mid-cell">
+            <div class="chip chip-yellow">✔ Good fit</div>
+            Heterogeneous mix: inference GPU + CPU for orchestration
+          </td>
+          <td class="tier-heavy-cell">
+            <div class="chip chip-red">✔ For high-scale</div>
+            MGX / OCP mixed racks
+          </td>
+        </tr>
+        <tr>
+          <td class="row-label">Model Serving<br><span class="row-sub">(real-time API)</span></td>
+          <td class="tier-light-cell">Only for tiny models</td>
+          <td class="tier-mid-cell">
+            <div class="chip chip-yellow">✔ Best fit</div>
+            Inference-optimized GPU<br>(L40S, A10G), low-latency
+          </td>
+          <td class="tier-heavy-cell">Reserved for massive concurrent load</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Key rightsizing principles -->
+  <div class="principles">
+    <h3>Key Rightsizing Principles</h3>
+    <div class="principles-grid">
+      <div class="principle-card">
+        <div class="p-icon">💾</div>
+        <div class="p-title">Memory First</div>
+        <div class="p-body">Model weights must fit in GPU VRAM. A 70B FP16 model needs ~140 GB — plan for multi-GPU tensor parallelism or quantization.</div>
+      </div>
+      <div class="principle-card">
+        <div class="p-icon">⚡</div>
+        <div class="p-title">Bandwidth Over FLOPS</div>
+        <div class="p-body">Inference is memory-bandwidth-bound, not compute-bound. Prefer GPUs with high HBM bandwidth (e.g., H100: 3.35 TB/s) for low-latency serving.</div>
+      </div>
+      <div class="principle-card">
+        <div class="p-icon">🌡️</div>
+        <div class="p-title">Thermal &amp; Power Budget</div>
+        <div class="p-body">Dense GPU racks (400–1000 W/GPU) require liquid cooling. Plan facility power and cooling before hardware procurement.</div>
+      </div>
+      <div class="principle-card">
+        <div class="p-icon">🔀</div>
+        <div class="p-title">Heterogeneous Pools</div>
+        <div class="p-body">Separate training, inference, and embedding GPU pools. Mixed fleets (e.g., H100 + L40S) optimize cost and utilization across workload types.</div>
+      </div>
+      <div class="principle-card">
+        <div class="p-icon">📐</div>
+        <div class="p-title">Quantization Leverage</div>
+        <div class="p-body">INT8 / INT4 quantization can halve VRAM requirements with minimal quality loss — enabling a smaller (cheaper) GPU tier for many inference workloads.</div>
+      </div>
+      <div class="principle-card">
+        <div class="p-icon">📊</div>
+        <div class="p-title">Profile Before Scaling</div>
+        <div class="p-body">Measure actual GPU utilization, memory usage, and latency under realistic load before scaling out. Idle GPU time is wasted CapEx.</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>AI Architecture Evolution &amp; Hardware Rightsizing &mdash; GitHub Pages</footer>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 3 – Contact Information (PPT last slide)
+       ═══════════════════════════════════════════════════════════════ -->
+  <div class="contact-slide">
+    <div class="slide-label">Thank You</div>
+    <h2>Contact Information</h2>
+    <p class="tagline">Reach out to learn more about AI infrastructure, rightsizing, and architecture design.</p>
+    <hr class="contact-divider">
+    <div class="contact-grid">
+      <div class="contact-item">
+        <span class="ci-icon">👤</span>
+        <div>
+          <div class="ci-label">Presenter</div>
+          <div class="ci-value">Gerry Chen</div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <span class="ci-icon">🏢</span>
+        <div>
+          <div class="ci-label">Organization</div>
+          <div class="ci-value">AI Infrastructure &amp; Solutions</div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <span class="ci-icon">✉️</span>
+        <div>
+          <div class="ci-label">Email</div>
+          <a class="ci-value" href="mailto:contact@example.com">contact@example.com</a>
+        </div>
+      </div>
+      <div class="contact-item">
+        <span class="ci-icon">🌐</span>
+        <div>
+          <div class="ci-label">GitHub Pages</div>
+          <a class="ci-value" href="https://gerry630.github.io/skills-github-pages/" target="_blank" rel="noopener">gerry630.github.io/skills-github-pages</a>
+        </div>
+      </div>
+      <div class="contact-item">
+        <span class="ci-icon">💼</span>
+        <div>
+          <div class="ci-label">LinkedIn</div>
+          <a class="ci-value" href="https://linkedin.com/in/gerry630" target="_blank" rel="noopener">linkedin.com/in/gerry630</a>
+        </div>
+      </div>
+      <div class="contact-item">
+        <span class="ci-icon">🐙</span>
+        <div>
+          <div class="ci-label">GitHub</div>
+          <a class="ci-value" href="https://github.com/Gerry630" target="_blank" rel="noopener">github.com/Gerry630</a>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">© 2026 &mdash; AI Architecture Evolution &amp; Hardware Rightsizing</div>
+  </div>
+
+</body>
+</html>
