@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Homogeneous vs Heterogeneous GPU</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f4f6f9;
+      color: #1a1a2e;
+      padding: 2rem 1rem;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 1.8rem;
+      margin-bottom: 2rem;
+      color: #0d1b2a;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+      max-width: 960px;
+      margin: 0 auto;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #ffffff;
+    }
+
+    thead th {
+      padding: 1rem 1.5rem;
+      font-size: 1.1rem;
+      text-align: center;
+    }
+
+    thead th:first-child {
+      background: #e8ecf0;
+      color: #444;
+      text-align: left;
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    thead th.homo {
+      background: #1a3a5c;
+      color: #ffffff;
+    }
+
+    thead th.hetero {
+      background: #2e6b3e;
+      color: #ffffff;
+    }
+
+    tbody tr {
+      border-top: 1px solid #e0e4ea;
+    }
+
+    tbody tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    tbody td {
+      padding: 1rem 1.5rem;
+      vertical-align: top;
+      line-height: 1.6;
+      font-size: 0.95rem;
+    }
+
+    tbody td:first-child {
+      font-weight: 700;
+      background: #eef1f5;
+      white-space: nowrap;
+      color: #333;
+      font-size: 0.9rem;
+    }
+
+    tbody td.homo-cell {
+      border-left: 3px solid #1a3a5c;
+    }
+
+    tbody td.hetero-cell {
+      border-left: 3px solid #2e6b3e;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin: 0 0.15rem;
+    }
+
+    .tag-blue  { background: #dbeafe; color: #1e40af; }
+    .tag-green { background: #dcfce7; color: #166534; }
+
+    strong { color: #111; }
+
+    footer {
+      text-align: center;
+      margin-top: 2.5rem;
+      font-size: 0.8rem;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <h1>Homogeneous GPU vs Heterogeneous GPU</h1>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Dimension</th>
+          <th class="homo">Homogeneous GPU</th>
+          <th class="hetero">Heterogeneous GPU</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>GPU Type</td>
+          <td class="homo-cell">
+            Single GPU architecture<br>
+            (e.g., all H100, all B200)
+          </td>
+          <td class="hetero-cell">
+            Mixed GPU types<br>
+            (e.g., H100 + L40S, B200 + inference GPUs)
+          </td>
+        </tr>
+        <tr>
+          <td>System Goal</td>
+          <td class="homo-cell">
+            Maximize <strong>uniform performance</strong> and scale-up efficiency
+          </td>
+          <td class="hetero-cell">
+            Maximize perf/$, perf/W, and flexibility
+          </td>
+        </tr>
+        <tr>
+          <td>Programming Model</td>
+          <td class="homo-cell">
+            Simple, symmetric
+            <span class="tag tag-blue">Process A ↔ Process B</span>
+          </td>
+          <td class="hetero-cell">
+            More complex scheduling and orchestration
+          </td>
+        </tr>
+        <tr>
+          <td>Workload Fit</td>
+          <td class="homo-cell">
+            Large-scale <strong>training</strong>, tightly coupled inference
+          </td>
+          <td class="hetero-cell">
+            <strong>Inference, agentic AI, RAG</strong>, mixed workloads
+          </td>
+        </tr>
+        <tr>
+          <td>Resource Utilization</td>
+          <td class="homo-cell">
+            High for uniform jobs
+          </td>
+          <td class="hetero-cell">
+            Higher overall utilization across diverse jobs
+          </td>
+        </tr>
+        <tr>
+          <td>Cost Efficiency</td>
+          <td class="homo-cell">
+            Lower flexibility, higher cost floor
+          </td>
+          <td class="hetero-cell">
+            Better TCO by right-sizing accelerators
+          </td>
+        </tr>
+        <tr>
+          <td>Typical Platforms</td>
+          <td class="homo-cell">
+            <span class="tag tag-blue">DGX</span>
+            <span class="tag tag-blue">HGX</span> clusters
+          </td>
+          <td class="hetero-cell">
+            <span class="tag tag-green">MGX</span>
+            <span class="tag tag-green">OCP</span>
+            mixed AI racks
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <footer>GPU Architecture Comparison &mdash; GitHub Pages</footer>
+</body>
+</html>
